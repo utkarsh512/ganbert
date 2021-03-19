@@ -4,6 +4,8 @@
 #
 # Here is defined the GAN-BERT model, starting from the run_classifier.py https://github.com/google-research/bert/blob/master/run_classifier.py
 #
+# Modified for Ad-hominem fallacy detection by Utkarsh Patel
+#
 
 from __future__ import absolute_import
 from __future__ import division
@@ -21,7 +23,7 @@ import random
 import math
 import tf_metrics
 
-from data_processors import InputFeatures, PaddingInputExample, QcFineProcessor
+from data_processors import InputFeatures, PaddingInputExample, AdHominemClassifier
 
 
 flags = tf.flags
@@ -41,8 +43,6 @@ flags.DEFINE_string(
     "bert_config_file", None,
     "The config json file corresponding to the pre-trained BERT model. "
     "This specifies the model architecture.")
-
-flags.DEFINE_string("task_name", None, "The name of the task to train.")
 
 flags.DEFINE_string("vocab_file", None,
                     "The vocabulary file that the BERT model was trained on.")
@@ -631,8 +631,6 @@ def main(_):
 
   label_rate = FLAGS.label_rate
 
-  processors = {"qc-fine": QcFineProcessor}
-
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
                                                 FLAGS.init_checkpoint)
 
@@ -650,12 +648,7 @@ def main(_):
 
   tf.gfile.MakeDirs(FLAGS.output_dir)
 
-  task_name = FLAGS.task_name.lower()
-
-  if task_name not in processors:
-    raise ValueError("Task not found: %s" % (task_name))
-
-  processor = processors[task_name]()
+  processor = AdHominemClassifier()
 
   label_list = processor.get_labels()
 
@@ -786,7 +779,6 @@ def main(_):
 
 if __name__ == "__main__":
   flags.mark_flag_as_required("data_dir")
-  flags.mark_flag_as_required("task_name")
   flags.mark_flag_as_required("vocab_file")
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
