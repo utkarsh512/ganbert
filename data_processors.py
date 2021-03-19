@@ -2,7 +2,6 @@
 # Copyright Tor Vergata, University of Rome. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# Data processor for the QC dataset
 
 import os
 import csv
@@ -91,9 +90,7 @@ class DataProcessor(object):
         lines.append(line)
       return lines
 
-class QcFineProcessor(DataProcessor):
-    """Processor for the MultiNLI data set (GLUE version)."""
-
+class AdHominemClassifier(DataProcessor):
     def get_labeled_examples(self, data_dir):
         """See base class."""
         return self._create_examples(os.path.join(data_dir, "labeled.tsv"), "train")
@@ -108,8 +105,8 @@ class QcFineProcessor(DataProcessor):
 
     def get_labels(self):
         """See base class."""
-        return ["UNK_UNK", "ABBR_abb", "ABBR_exp", "DESC_def", "DESC_desc", "DESC_manner", "DESC_reason", "ENTY_animal", "ENTY_body", "ENTY_color", "ENTY_cremat", "ENTY_currency", "ENTY_dismed", "ENTY_event", "ENTY_food", "ENTY_instru", "ENTY_lang", "ENTY_letter", "ENTY_other", "ENTY_plant", "ENTY_product", "ENTY_religion", "ENTY_sport", "ENTY_substance", "ENTY_symbol", "ENTY_techmeth", "ENTY_termeq", "ENTY_veh", "ENTY_word", "HUM_desc", "HUM_gr", "HUM_ind", "HUM_title", "LOC_city", "LOC_country", "LOC_mount", "LOC_other", "LOC_state", "NUM_code", "NUM_count", "NUM_date", "NUM_dist", "NUM_money", "NUM_ord", "NUM_other", "NUM_perc", "NUM_period", "NUM_speed", "NUM_temp", "NUM_volsize", "NUM_weight"]
-
+        return ["UNK", "AH", "NONE"]
+        
     def _create_examples(self, input_file, set_type):
         """Creates examples for the training and dev sets."""
         examples = []
@@ -123,8 +120,7 @@ class QcFineProcessor(DataProcessor):
 
                 guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line))
                 text_a = tokenization.convert_to_unicode(question)
-                inn_split = split[0].split(":")
-                label = inn_split[0] + "_" + inn_split[1]
+                label = split[0]
                 examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
             f.close()
 
