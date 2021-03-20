@@ -31,7 +31,7 @@ flags = tf.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_integer(
-    "unlabeled_multiplier", 100,
+    "unlabeled_multiplier", 10,
     "The multiplier to compute the max number of unlabeled examples with respect to the labeled examples.")
 
 flags.DEFINE_string(
