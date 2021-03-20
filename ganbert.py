@@ -611,7 +611,7 @@ def evaluate(estimator, label_rate, eval_examples, label_list, tokenizer):
 
     result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps)
 
-    overall_result_file = open(statistics_GANBERT" + str(label_rate) + ".txt", "a+")
+    overall_result_file = open("statistics_GANBERT" + str(label_rate) + ".txt", "a+")
 
     for key in sorted(result.keys()):
         overall_result_file.write(str(label_rate) + " ")
