@@ -25,10 +25,16 @@ def main():
   writer = open(writer_addr, 'w')
   writer.write('label comments\n')
 
+  train_ah = 0
+  train_none = 0
+
   for i in tqdm(range(4000), unit=" comments", desc="comments processed"):
     label = 'NONE'
+    train_none += 1
     if violated_rule[i] == 2:
       label = 'AH'
+      train_ah += 1
+      train_none -= 1
     cur = pr.preprocess(comments[i])
     cur = ' '.join(cur)
     cur = label + ' ' + cur + '\n'
@@ -40,16 +46,25 @@ def main():
   writer = open(writer_addr, 'w')
   writer.write('label comments\n')
 
-  for i in tqdm(range(4000), unit=" comments", desc="comments processed"):
+  test_ah = 0
+  test_none = 0
+
+  for i in tqdm(range(4000, range(len(comments))), unit=" comments", desc="comments processed"):
     label = 'NONE'
+    test_none += 1
     if violated_rule[i] == 2:
       label = 'AH'
+      test_ah += 1
+      test_none -= 1
     cur = pr.preprocess(comments[i])
     cur = ' '.join(cur)
     cur = label + ' ' + cur + '\n'
     writer.write(cur)
   
   writer.close()
+
+  print(f'Training set: AH: {train_ah} - NONE: {train_none}')
+  print(f'Test set: AH: {test_ah} - NONE: {test_none}')
   
 if __name__ == '__main__':
   main()
