@@ -49,7 +49,7 @@ def main():
   test_ah = 0
   test_none = 0
 
-  for i in tqdm(range(4000, range(len(comments))), unit=" comments", desc="comments processed"):
+  for i in tqdm(range(4000, len(comments)), unit=" comments", desc="comments processed"):
     label = 'NONE'
     test_none += 1
     if violated_rule[i] == 2:
