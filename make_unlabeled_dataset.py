@@ -30,7 +30,7 @@ def main():
     cur = 'UNK ' + cur + '\n'
     writer.write(cur)
   
-  writer.close())
+  writer.close()
   
 if __name__ == '__main__':
   main()
