@@ -573,7 +573,7 @@ def get_labeled_mask(mask_size, labeled_size):
     return labeled_mask
 
 
-def evaluate(estimator, label_rate, eval_examples, task_name, label_list, tokenizer):
+def evaluate(estimator, label_rate, eval_examples, label_list, tokenizer):
     num_actual_eval_examples = len(eval_examples)
     if FLAGS.use_tpu:
         # TPU requires a fixed batch size for all batches, therefore the number
@@ -584,7 +584,7 @@ def evaluate(estimator, label_rate, eval_examples, task_name, label_list, tokeni
         while len(eval_examples) % FLAGS.eval_batch_size != 0:
             eval_examples.append(PaddingInputExample())
 
-    eval_file = os.path.join(FLAGS.output_dir, "eval_"+str(task_name)+".tf_record")
+    eval_file = os.path.join(FLAGS.output_dir, "eval.tf_record")
     file_based_convert_examples_to_features(
         eval_examples, None, label_list, FLAGS.max_seq_length, tokenizer, eval_file, label_mask_rate=1)
 
@@ -611,14 +611,14 @@ def evaluate(estimator, label_rate, eval_examples, task_name, label_list, tokeni
 
     result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps)
 
-    overall_result_file = open(task_name + "_statistics_GANBERT" + str(label_rate) + ".txt", "a+")
+    overall_result_file = open(statistics_GANBERT" + str(label_rate) + ".txt", "a+")
 
     for key in sorted(result.keys()):
         overall_result_file.write(str(label_rate) + " ")
         overall_result_file.write("%s = %s " % (key, str(result[key])))
     overall_result_file.write("\n")
 
-    output_eval_file = os.path.join(FLAGS.output_dir, "eval_results_"+str(task_name)+".txt")
+    output_eval_file = os.path.join(FLAGS.output_dir, "eval_results.txt")
     with tf.gfile.GFile(output_eval_file, "w") as writer:
         tf.logging.info("***** Eval results *****")
         for key in sorted(result.keys()):
@@ -726,8 +726,7 @@ def main(_):
 
   if FLAGS.do_eval:
     eval_examples = processor.get_test_examples(FLAGS.data_dir)
-    evaluate(estimator=estimator, label_rate=label_rate, eval_examples=eval_examples,
-              task_name=task_name, label_list=label_list, tokenizer=tokenizer)
+    evaluate(estimator=estimator, label_rate=label_rate, eval_examples=eval_examples, label_list=label_list, tokenizer=tokenizer)
 
   if FLAGS.do_predict:
     predict_examples = processor.get_test_examples(FLAGS.data_dir)
