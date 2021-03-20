@@ -18,7 +18,7 @@ def main():
   pr = Preprocess()
 
   reader = pd.read_json(args.indir, lines=True, compression=None)
-  comments = list(reader['body'])[:40000]
+  comments = list(reader['body'])
 
   writer_addr = os.path.join(args.outdir, 'unlabeled.tsv')
   writer = open(writer_addr, 'w')
