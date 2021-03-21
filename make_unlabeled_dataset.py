@@ -12,13 +12,14 @@ from tqdm import tqdm
 
 def main():
   parser = argparse.ArgumentParser()
+  parser.add_argument("--count", default=None, type=int, required=True, help="number of examples in unlabeled.tsv")
   parser.add_argument("--indir", default=None, type=str, required=True, help="directory of json files containing comments")
   parser.add_argument("--outdir", default=None, type=str, required=True, help="directory to store unlabeled.tsv files")
   args = parser.parse_args()
   pr = Preprocess()
 
   reader = pd.read_json(args.indir, lines=True, compression=None)
-  comments = list(reader['body'])
+  comments = list(reader['body'])[:args.count]
 
   writer_addr = os.path.join(args.outdir, 'unlabeled.tsv')
   writer = open(writer_addr, 'w')
