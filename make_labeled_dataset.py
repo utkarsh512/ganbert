@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 def main():
   parser = argparse.ArgumentParser()
+  parser.add_argument("--count", default=None, type=int, required=True, help="Number of examples to put in training set")
   parser.add_argument("--indir", default=None, type=str, required=True, help="directory of json files containing comments")
   parser.add_argument("--outdir", default=None, type=str, required=True, help="directory to store labeled.tsv and test.tsv files")
   args = parser.parse_args()
@@ -28,7 +29,7 @@ def main():
   train_ah = 0
   train_none = 0
 
-  for i in tqdm(range(4000), unit=" comments", desc="comments processed"):
+  for i in tqdm(range(args.count), unit=" comments", desc="comments processed"):
     label = 'NONE'
     train_none += 1
     if violated_rule[i] == 2:
@@ -49,7 +50,7 @@ def main():
   test_ah = 0
   test_none = 0
 
-  for i in tqdm(range(4000, len(comments)), unit=" comments", desc="comments processed"):
+  for i in tqdm(range(args.count, len(comments)), unit=" comments", desc="comments processed"):
     label = 'NONE'
     test_none += 1
     if violated_rule[i] == 2:
