@@ -5,6 +5,7 @@
 * `labeled.tsv` - Examples with labels for supervised training
 * `unlabeled.tsv` - Examples without labels for adversial training
 * `test.tsv` - Examples with labels for evaluation
+
 Every example in `labeled.tsv`, `unlabeled.tsv` and `test.tsv` must come from same distribution (source).
 ## Structure of data set
 For K-class classification task, modify `line: 108` in `data_processors.py` to include the class labels (in upper case) along with `UNK` label for _unlabeled_ examples.
