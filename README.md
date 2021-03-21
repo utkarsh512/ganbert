@@ -1,6 +1,29 @@
 # Enhancing the BERT training with Semi-supervised Generative Adversarial Networks
-`GANBERT` combines the power of pre-trained `BERT` and `GANs`. To run the codes, install `BERT_base_cased` model as
-```bash
+`GAN-Bert` combines the power of pre-trained `Bert` and `GANs`. 
+## Preparing data set for model
+`GAN-Bert` uses three data sets:
+* `labeled.tsv` - Examples with labels for supervised training
+* `unlabeled.tsv` - Examples without labels for adversial training
+* `test.tsv` - Examples with labels for evaluation
+Every example in `labeled.tsv`, `unlabeled.tsv` and `test.tsv` must come from same distribution (source).
+## Structure of data set
+For K-class classification task, modify `line: 108` in `data_processors.py` to include the class labels (in upper case) along with `UNK` label for _unlabeled_ examples.
+* ### Structure of `labeled.tsv` and `test.tsv`
+  ```
+  label sentence
+  label_1 sentence_1
+  label_2 sentence_2
+  ...
+  ```
+* ### Structure of `unlabeled.tsv`
+  ```
+  label sentence
+  UNK sentence_1
+  UNK sentence_2
+  ...
+  ```
+To run the codes, install `BERT_base_cased` model as
+```python
 !wget https://storage.googleapis.com/bert_models/2018_10_18/cased_L-12_H-768_A-12.zip
 !unzip cased_L-12_H-768_A-12.zip
 ```
