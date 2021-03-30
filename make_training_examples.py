@@ -37,7 +37,7 @@ def main():
 
   print('Preparing labeled.tsv...')
 
-  for i in tqdm(range(labeled_comments), unit=" comments", desc="comments processed"):
+  for i in tqdm(range(len(labeled_comments)), unit=" comments", desc="comments processed"):
     label = 'NONE'
     labeled_none += 1
     if labeled_rule[i] == 2:
@@ -57,7 +57,7 @@ def main():
 
   print('Preparing unlabeled.tsv...')
 
-  for i in tqdm(range(unlabeled_comments), unit=" comments", desc="comments processed"):
+  for i in tqdm(range(len(unlabeled_comments)), unit=" comments", desc="comments processed"):
     label = 'UNK'
     cur = pr.preprocess(unlabeled_comments[i])
     cur = ' '.join(cur)
