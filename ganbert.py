@@ -22,9 +22,9 @@ import numpy as np
 import random
 import math
 import tf_metrics
-from sklearn.metrics import confusion_matrix
 
 from data_processors import InputFeatures, PaddingInputExample, AdHominemClassifier
+
 
 
 flags = tf.flags
@@ -541,7 +541,6 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         f1_macro = tf_metrics.f1(labels=label_ids, predictions=predictions, num_classes=num_labels,
                                  weights=is_real_example, average='macro')
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
-        print(confusion_matrix(label_ids, predictions, labels=range(num_labels)))
         return {
             "eval_accuracy": accuracy,
             "eval_precision": precision,
@@ -784,3 +783,4 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
   tf.app.run()
+  # cased_L-12_H-768_A-12/bert_model.ckpt
