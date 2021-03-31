@@ -450,6 +450,20 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
   return (d_loss, g_loss, per_example_loss, logits, probabilities)
 
+def eval_confusion_matrix(labels, predictions):
+    with tf.variable_scope("eval_confusion_matrix"):
+        con_matrix = tf.confusion_matrix(labels=labels, predictions=predictions, num_classes=3)
+
+        con_matrix_sum = tf.Variable(tf.zeros(shape=(3,3), dtype=tf.int32),
+                                            trainable=False,
+                                            name="confusion_matrix_result",
+                                            collections=[tf.GraphKeys.LOCAL_VARIABLES])
+
+
+        update_op = tf.assign_add(con_matrix_sum, con_matrix)
+
+        return tf.convert_to_tensor(con_matrix_sum), update_op
+
 
 def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                      num_train_steps, num_warmup_steps, use_tpu,
@@ -541,12 +555,15 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         f1_macro = tf_metrics.f1(labels=label_ids, predictions=predictions, num_classes=num_labels,
                                  weights=is_real_example, average='macro')
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
+        cm = tf.confusion_matrix(labels=label_ids, predictions=predictions, num_classes=num_labels, weights=is_real_example)
+        
         return {
             "eval_accuracy": accuracy,
             "eval_precision": precision,
             "eval_recall": recall,
             "eval_f1_micro": f1_micro,
             "eval_f1_macro": f1_macro,
+            "conv_matrix": eval_confusion_matrix(label_ids, predictions),
             "eval_loss": loss,
         }
 
