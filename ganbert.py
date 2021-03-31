@@ -25,8 +25,6 @@ import tf_metrics
 
 from data_processors import InputFeatures, PaddingInputExample, AdHominemClassifier
 
-
-
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -60,6 +58,10 @@ flags.DEFINE_bool(
     "do_lower_case", True,
     "Whether to lower case the input text. Should be True for uncased "
     "models and False for cased models.")
+
+flags.DEFINE_integer(
+    "num_classes", 3,
+    "Number of distinct labels")
 
 flags.DEFINE_integer(
     "max_seq_length", 128,
@@ -452,9 +454,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
 def eval_confusion_matrix(labels, predictions):
     with tf.variable_scope("eval_confusion_matrix"):
-        con_matrix = tf.confusion_matrix(labels=labels, predictions=predictions, num_classes=3)
+        con_matrix = tf.confusion_matrix(labels=labels, predictions=predictions, num_classes=FLAGS.num_classes)
 
-        con_matrix_sum = tf.Variable(tf.zeros(shape=(3,3), dtype=tf.int32),
+        con_matrix_sum = tf.Variable(tf.zeros(shape=(FLAGS.num_classes,FLAGS.num_classes), dtype=tf.int32),
                                             trainable=False,
                                             name="confusion_matrix_result",
                                             collections=[tf.GraphKeys.LOCAL_VARIABLES])
@@ -799,5 +801,6 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("vocab_file")
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
+  flags.mark_flag_as_required("num_classes")
   tf.app.run()
   # cased_L-12_H-768_A-12/bert_model.ckpt
