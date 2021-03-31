@@ -803,4 +803,3 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("output_dir")
   flags.mark_flag_as_required("num_classes")
   tf.app.run()
-  # cased_L-12_H-768_A-12/bert_model.ckpt
