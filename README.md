@@ -48,6 +48,7 @@ Then, run the `ganbert` model as
 ```python
 %%shell
 python -u ganbert.py \
+        --num_classes=3 \
         --label_rate=0.02 \
         --do_train=true \
         --do_eval=true \
