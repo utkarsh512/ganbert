@@ -8,7 +8,7 @@
 
 Every example in `labeled.tsv`, `unlabeled.tsv` and `test.tsv` must come from same distribution (source).
 ## Structure of data set
-For K-class classification task, modify `line: 108` in `data_processors.py` to include the class labels (in upper case) along with `UNK` label for _unlabeled_ examples.
+For K-class classification task, modify `line: 105` in `data_processors.py` to include the class labels (in upper case) along with `UNK` label for _unlabeled_ examples.
 * ### Structure of `labeled.tsv` and `test.tsv`
   ```
   label sentence
