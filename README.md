@@ -1,4 +1,4 @@
-# Enhancing the BERT training with Semi-supervised Generative Adversarial Networks and LIME visualization
+# Enhancing the BERT training with Semi-supervised Generative Adversarial Networks and LIME visualizations
 `GAN-Bert` combines the power of pre-trained `Bert` and `GANs`. 
 ## Preparing data set for model
 `GAN-Bert` uses three data sets:
