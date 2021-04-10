@@ -4,7 +4,7 @@
 #
 # Here is defined the GAN-BERT model, starting from the run_classifier.py https://github.com/google-research/bert/blob/master/run_classifier.py
 #
-# Modified for Ad-hominem fallacy detection by Utkarsh Patel
+# LIME visualization feature added by @utkarsh512
 #
 
 from __future__ import absolute_import
@@ -25,7 +25,7 @@ import tf_metrics
 from lime.lime_text import LimeTextExplainer
 from tqdm import tqdm
 
-from data_processors import InputFeatures, PaddingInputExample, AdHominemClassifier
+from data_processors import InputFeatures, PaddingInputExample, Processor
 
 flags = tf.flags
 
@@ -678,7 +678,7 @@ def main(_):
 
   tf.gfile.MakeDirs(FLAGS.output_dir)
 
-  processor = AdHominemClassifier()
+  processor = Processor()
 
   label_list = processor.get_labels()
 
