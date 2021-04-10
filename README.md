@@ -75,7 +75,7 @@ python -u ganbert.py \
         --label_rate=0.02 \
         --do_train=true \
         --do_eval=false \
-        --do_visualize=true \
+        --do_visual=true \
         --do_predict=false \
         --data_dir=data \
         --comment_dir=path_to_the_txt_file \
