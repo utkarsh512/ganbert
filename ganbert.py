@@ -22,6 +22,8 @@ import numpy as np
 import random
 import math
 import tf_metrics
+from lime.lime_text import LimeTextExplainer
+from tqdm import tqdm
 
 from data_processors import InputFeatures, PaddingInputExample, AdHominemClassifier
 
@@ -72,6 +74,15 @@ flags.DEFINE_integer(
 flags.DEFINE_bool("do_train", False, "Whether to run training.")
 
 flags.DEFINE_bool("do_eval", False, "Whether to run eval on the dev set.")
+flags.DEFINE_bool("do_visual", False, "Whether to do visualization or not")
+
+flags.DEFINE_string(
+    "comment_dir", None,
+    "path where the comments are stored")
+
+flags.DEFINE_string(
+    "visual_dir", None,
+    "The output directory where the model visualization will be written.")
 
 flags.DEFINE_bool(
     "do_predict", False,
@@ -645,7 +656,6 @@ def evaluate(estimator, label_rate, eval_examples, label_list, tokenizer):
             tf.logging.info("  %s = %s", key, str(result[key]))
             writer.write("%s = %s\n" % (key, str(result[key])))
 
-
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -748,6 +758,31 @@ def main(_):
     eval_examples = processor.get_test_examples(FLAGS.data_dir)
     evaluate(estimator=estimator, label_rate=label_rate, eval_examples=eval_examples, label_list=label_list, tokenizer=tokenizer)
 
+  if FLAGS.do_visualize:
+    explainer = LimeTextExplainer(class_names = label_list)
+    def predictor(texts):
+      examples = []
+      for t in texts:
+        examples.append(InputExample(guid="test-0", text_a=t, text_b=None, label=None))
+      num_actual_predict_examples = len(examples)
+      if FLAGS.use_tpu:
+         while len(examples) % FLAGS.predict_batch_size != 0:
+           examples.append(PaddingInputExample())
+      predict_file = os.path.join(FLAGS.output_dir, "lime.tf_record")
+      file_based_convert_examples_to_features(examples, label_list, FLAGS.max_seq_length, tokenizer, predict_file)
+      predict_drop_remainder = True if FLAGS.use_tpu else False
+      predict_input_lime_fn = file_based_input_fn_builder(input_file=predict_file, seq_length=FLAGS.max_seq_length, is_training=False, drop_remainder=predict_drop_remainder)
+      result = estimator.predict(input_fn=predict_input_lime_fn)
+      return np.array([r["probabilities"].tolist() for r in result])
+    comments = None
+    with open(FLAGS.comment_dir, 'r') as f:
+      comments = f.readlines()
+    for i in tqdm(range(len(comments))):
+      text = comments[i].strip()
+      exp = explainer.explain_instance(text, predictor, num_features=5)
+      writer = os.path.join(FLAGS.visual_dir, f'comment_{i}.html')
+      exp.save_as_file(writer)
+
   if FLAGS.do_predict:
     predict_examples = processor.get_test_examples(FLAGS.data_dir)
     num_actual_predict_examples = len(predict_examples)
@@ -794,6 +829,8 @@ def main(_):
         writer.write(output_line)
         num_written_lines += 1
     assert num_written_lines == num_actual_predict_examples
+
+
 
 
 if __name__ == "__main__":
