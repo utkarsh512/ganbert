@@ -87,7 +87,7 @@ class DataProcessor(object):
         lines.append(line)
       return lines
 
-class AdHominemClassifier(DataProcessor):
+class Processor(DataProcessor):
     def get_labeled_examples(self, data_dir):
         """See base class."""
         return self._create_examples(os.path.join(data_dir, "labeled.tsv"), "train")
