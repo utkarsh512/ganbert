@@ -758,7 +758,7 @@ def main(_):
     eval_examples = processor.get_test_examples(FLAGS.data_dir)
     evaluate(estimator=estimator, label_rate=label_rate, eval_examples=eval_examples, label_list=label_list, tokenizer=tokenizer)
 
-  if FLAGS.do_visualize:
+  if FLAGS.do_visual:
     explainer = LimeTextExplainer(class_names = label_list)
     def predictor(texts):
       examples = []
