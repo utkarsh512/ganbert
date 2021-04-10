@@ -781,7 +781,7 @@ def main(_):
       text = comments[i].strip()
       exp = explainer.explain_instance(text, predictor, num_features=5)
       writer = os.path.join(FLAGS.visual_dir, f'comment_{i}.html')
-      exp.save_as_file(writer)
+      exp.save_to_file(writer)
 
   if FLAGS.do_predict:
     predict_examples = processor.get_test_examples(FLAGS.data_dir)
