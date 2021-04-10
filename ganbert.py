@@ -779,7 +779,7 @@ def main(_):
       comments = f.readlines()
     for i in tqdm(range(len(comments))):
       text = comments[i].strip()
-      exp = explainer.explain_instance(text, predictor, num_features=5, num_samples=10)
+      exp = explainer.explain_instance(text, predictor, num_features=5)
       writer = os.path.join(FLAGS.visual_dir, f'comment_{i}.html')
       exp.save_to_file(writer)
 
