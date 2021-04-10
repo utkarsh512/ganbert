@@ -25,7 +25,7 @@ import tf_metrics
 from lime.lime_text import LimeTextExplainer
 from tqdm import tqdm
 
-from data_processors import InputFeatures, PaddingInputExample, Processor
+from data_processors import InputFeatures, PaddingInputExample, Processor, InputExample
 
 flags = tf.flags
 
@@ -763,13 +763,13 @@ def main(_):
     def predictor(texts):
       examples = []
       for t in texts:
-        examples.append(InputExample(guid="test-0", text_a=t, text_b=None, label=None))
+        examples.append(InputExample(guid="test-0", text_a=t, text_b=None, label='AH'))
       num_actual_predict_examples = len(examples)
       if FLAGS.use_tpu:
          while len(examples) % FLAGS.predict_batch_size != 0:
            examples.append(PaddingInputExample())
       predict_file = os.path.join(FLAGS.output_dir, "lime.tf_record")
-      file_based_convert_examples_to_features(examples, label_list, FLAGS.max_seq_length, tokenizer, predict_file)
+      file_based_convert_examples_to_features(examples, None, label_list, FLAGS.max_seq_length, tokenizer, predict_file, label_mask_rate=1)
       predict_drop_remainder = True if FLAGS.use_tpu else False
       predict_input_lime_fn = file_based_input_fn_builder(input_file=predict_file, seq_length=FLAGS.max_seq_length, is_training=False, drop_remainder=predict_drop_remainder)
       result = estimator.predict(input_fn=predict_input_lime_fn)
@@ -779,7 +779,7 @@ def main(_):
       comments = f.readlines()
     for i in tqdm(range(len(comments))):
       text = comments[i].strip()
-      exp = explainer.explain_instance(text, predictor, num_features=5)
+      exp = explainer.explain_instance(text, predictor, num_features=5, num_samples=10)
       writer = os.path.join(FLAGS.visual_dir, f'comment_{i}.html')
       exp.save_to_file(writer)
 
