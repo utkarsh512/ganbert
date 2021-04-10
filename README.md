@@ -24,7 +24,7 @@ For K-class classification task, modify `line: 105` in `data_processors.py` to i
   ...
   ```
 ## Training and evaluating the model
-See `classification_with_GANBert.ipynb` for training on Google Colab.
+[Tutorial](https://colab.research.google.com/drive/1QF8IUvrXmAP7fKtFciFM3z2SmkP73HMs?usp=sharing) for training the model on Google Colab.
 
 To run the codes, install `BERT_base_cased` model as
 ```python
