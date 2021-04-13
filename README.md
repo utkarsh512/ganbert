@@ -37,6 +37,10 @@ The codes were tested on Google Colab using GPU runtime. To perform similar expe
 !pip install tensorflow-gpu==1.14.0
 !pip install gast==0.2.2
 !pip install git+https://github.com/guillaumegenthial/tf_metrics.git
+!pip install nltk
+!pip install autocorrect
+!pip install lime
+!pip install tqdm
 ```
 To make sure that the runtime will be using GPU, try this
 ```python
@@ -89,5 +93,8 @@ python -u ganbert.py \
         --num_train_epochs=3 \
         --warmup_proportion=0.1 \
         --do_lower_case=false \
+        --num_features=5 \
+        --num_samples=20 \
         --output_dir=ganbert_output_model
 ```
+The visualizations will be generated as HTML files (one file per instance) in `visual_dir` directory. `num_features` and `num_samples` are hyper-parameters for LIME visualization. Read the [documentation](https://lime-ml.readthedocs.io/en/latest/lime.html#lime.explanation.Explanation) for more details.
