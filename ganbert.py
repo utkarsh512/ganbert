@@ -66,6 +66,14 @@ flags.DEFINE_integer(
     "Number of distinct labels")
 
 flags.DEFINE_integer(
+    "num_features", 5,
+    "Number of words to visualize for each sentence")
+
+flags.DEFINE_integer(
+    "num_samples", 20,
+    "Number of neighboring samples used for making visualization")
+
+flags.DEFINE_integer(
     "max_seq_length", 128,
     "The maximum total input sequence length after WordPiece tokenization. "
     "Sequences longer than this will be truncated, and sequences shorter "
@@ -763,7 +771,7 @@ def main(_):
     def predictor(texts):
       examples = []
       for t in texts:
-        examples.append(InputExample(guid="test-0", text_a=t, text_b=None, label='AH'))
+        examples.append(InputExample(guid="test-0", text_a=t, text_b=None, label='UNK'))
       num_actual_predict_examples = len(examples)
       if FLAGS.use_tpu:
          while len(examples) % FLAGS.predict_batch_size != 0:
@@ -779,7 +787,7 @@ def main(_):
       comments = f.readlines()
     for i in tqdm(range(len(comments))):
       text = comments[i].strip()
-      exp = explainer.explain_instance(text, predictor, num_features=5)
+      exp = explainer.explain_instance(text, predictor, num_features=FLAGS.num_features, num_samples=FLAGS.num_samples)
       writer = os.path.join(FLAGS.visual_dir, f'comment_{i}.html')
       exp.save_to_file(writer)
 
@@ -829,9 +837,6 @@ def main(_):
         writer.write(output_line)
         num_written_lines += 1
     assert num_written_lines == num_actual_predict_examples
-
-
-
 
 if __name__ == "__main__":
   flags.mark_flag_as_required("data_dir")
