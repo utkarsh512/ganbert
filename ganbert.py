@@ -107,6 +107,12 @@ flags.DEFINE_float("learning_rate", 5e-5, "The initial learning rate for Adam.")
 flags.DEFINE_float("num_train_epochs", 3.0,
                    "Total number of training epochs to perform.")
 
+flags.DEFINE_float("fole", 0.5,
+                   "Fraction of labeled examples")
+
+flags.DEFINE_float("foule", 0.2,
+                   "Fraction of unlabeled examples")
+
 flags.DEFINE_float(
     "warmup_proportion", 0.1,
     "Proportion of training to perform linear learning rate warmup for. "
@@ -650,12 +656,12 @@ def evaluate(estimator, label_rate, eval_examples, label_list, tokenizer):
 
     result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps)
 
-    overall_result_file = open("statistics_GANBERT" + str(label_rate) + ".txt", "a+")
+    overall_result_file = open("statistics_GANBERT.txt", "a+")
 
     for key in sorted(result.keys()):
-        overall_result_file.write(str(label_rate) + " ")
+        overall_result_file.write(f'FoLE {FLAGS.fole} - FoULE {FLAGS.foule}\n')
         overall_result_file.write("%s = %s " % (key, str(result[key])))
-    overall_result_file.write("\n")
+    overall_result_file.write("\n\n")
 
     output_eval_file = os.path.join(FLAGS.output_dir, "eval_results.txt")
     with tf.gfile.GFile(output_eval_file, "w") as writer:
