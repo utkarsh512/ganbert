@@ -12,21 +12,26 @@ from tqdm import tqdm
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument("--ratio", default=None, type=float, required=True, help="ratio of training set to be used as labeled examples")
+  parser.add_argument("--fole", default=None, type=float, required=True, help="ratio of training set to be used as labeled examples")
+  parser.add_argument("--foule", default=None, type=float, required=True, help="ratio of training set to be used as unlabeled examples")
   parser.add_argument("--indir", default=None, type=str, required=True, help="directory of json files containing comments")
   parser.add_argument("--outdir", default=None, type=str, required=True, help="directory to store labeled.tsv and unlabeled.tsv files")
   args = parser.parse_args()
+  
   pr = Preprocess()
 
   reader = pd.read_json(args.indir, lines=True, compression=None)
   comments = list(reader['body'])
   violated_rule = list(reader['violated_rule'])
 
-  labeled_comments = comments[: int(args.ratio * len(comments))]
-  unlabeled_comments = comments[int(args.ratio * len(comments)):]
+  labeled_comments = comments[: int(args.fole * len(comments))]
+  unlabeled_comments = comments[int(args.fole * len(comments)) : int((args.fole + args.foule) * len(comments))]
 
-  labeled_rule = violated_rule[: int(args.ratio * len(violated_rule))]
-  unlabeled_rule = violated_rule[int(args.ratio * len(violated_rule)):]
+  print(f'Number of labeled examples  : {len(labeled_comments)}')
+  print(f'Number of unlabeled examples: {len(unlabeled_comments)}')
+
+  labeled_rule = violated_rule[: int(args.fole * len(comments))]
+  unlabeled_rule = violated_rule[int(args.fole * len(comments)) : int((args.fole + args.foule) * len(comments))]
 
   writer_addr = os.path.join(args.outdir, 'labeled.tsv')
   writer = open(writer_addr, 'w')
