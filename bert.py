@@ -20,7 +20,7 @@ import numpy as np
 import random
 import tf_metrics
 
-from data_processors import InputFeatures, PaddingInputExample, QcFineProcessor
+from data_processors import InputFeatures, PaddingInputExample, Processor, InputExample
 
 flags = tf.flags
 
@@ -522,8 +522,6 @@ def evaluate(estimator, label_rate, eval_examples, task_name, label_list, tokeni
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
 
-  processors = {"qc-fine": QcFineProcessor}
-
   label_rate = FLAGS.label_rate
 
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
@@ -543,12 +541,7 @@ def main(_):
 
   tf.gfile.MakeDirs(FLAGS.output_dir)
 
-  task_name = FLAGS.task_name.lower()
-
-  if task_name not in processors:
-    raise ValueError("Task not found: %s" % (task_name))
-
-  processor = processors[task_name]()
+  processor = Processor()
 
   label_list = processor.get_labels()
 
