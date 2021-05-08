@@ -830,13 +830,6 @@ def main(_):
 
     result = estimator.predict(input_fn=predict_input_fn)
     
-    model_summary_file = os.path.join(FLAGS.output_dir, "summary.txt")
-    with tf.gfile.GFile(model_summary_file, "w") as writer:
-      tf.logging.info("***** Writing model summary *****")
-      writer.write(str(estimator.summary()))
-    
-
-
     output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
     with tf.gfile.GFile(output_predict_file, "w") as writer:
       num_written_lines = 0
