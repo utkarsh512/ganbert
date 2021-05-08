@@ -830,7 +830,11 @@ def main(_):
 
     result = estimator.predict(input_fn=predict_input_fn)
     
-    print(estimator.summary())
+    model_summary_file = os.path.join(FLAGS.output_dir, "summary.txt")
+    with tf.gfile.GFile(model_summary_file, "w") as writer:
+      tf.logging.info("***** Writing model summary *****")
+      writer.write(str(estimator.summary()))
+    
 
 
     output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
@@ -846,6 +850,7 @@ def main(_):
             for class_probability in probabilities) + "\n"
         writer.write(output_line)
         num_written_lines += 1
+        
     assert num_written_lines == num_actual_predict_examples
 
 if __name__ == "__main__":
